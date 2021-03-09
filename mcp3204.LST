@@ -1,0 +1,77 @@
+C51 COMPILER V7.08   MCP3204                                                               06/14/2019 17:59:21 PAGE 1   
+
+
+C51 COMPILER V7.08, COMPILATION OF MODULE MCP3204
+OBJECT MODULE PLACED IN C:\!!!!!!\mcp3204.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE mcp3204.c BROWSE DEBUG OBJECTEXTEND OBJECT(C:\!!!!!!\mcp3204.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          #include"types.h"
+   3          #include"mcp3204_defines.h"
+   4          #include"spi.h"
+   5          
+   6          float read1_adc_mcp3204(u8 channel_no)
+   7          {
+   8   1      u16 adc_val=0;
+   9   1      float temp;
+  10   1      bit d0,d1;
+  11   1      s8 i;
+  12   1      d0=channel_no&1;
+  13   1      d1=(channel_no>>1)&1;
+  14   1      cs=clk=din=dout=1;
+  15   1      cs=0;
+  16   1      //7 clock pulses to sample analog signal and issue null bit
+  17   1      clk=0;clk=1;
+  18   1      clk=0;clk=1;
+  19   1      clk=0;clk=1;
+  20   1      din=d1;
+  21   1      clk=0;clk=1;
+  22   1      din=d0;
+  23   1      clk=0;clk=1;
+  24   1      clk=0;clk=1;
+  25   1      clk=0;clk=1;
+  26   1      //READ 12 BII CONVERTED VALUE MSB FIRST
+  27   1      for(i=11;i>=0;i--)
+  28   1      {
+  29   2      clk=0;
+  30   2      if(dout)
+  31   2      adc_val|=(1<<i);
+  32   2      clk=1;
+  33   2      }
+  34   1      cs=1;
+  35   1      temp=((adc_val*5.0)/4096);
+  36   1      return temp;
+  37   1      }
+  38          
+  39          /*float read2_adc_mcp3204(u8 channel_no)
+  40          {
+  41          u8 Hbyte,Lbyte;
+  42          u16 adc_val=0;
+  43          float temp;
+  44          cs=clk=dout=din=1;
+  45          cs=0;
+  46          spi(0x06);
+  47          Hbyte=spi(channel_no<<6);
+  48          Lbyte=spi(0x00);
+  49          cs=1;
+  50          adc_val=((Hbyte&0x0f)<<8)|Lbyte;
+  51          temp=((adc_val*5.0)/4096);
+  52          return temp;}*/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+C51 COMPILER V7.08   MCP3204                                                               06/14/2019 17:59:21 PAGE 2   
+
+   CODE SIZE        =    133    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----       2
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

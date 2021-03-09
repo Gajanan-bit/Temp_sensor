@@ -1,0 +1,97 @@
+C51 COMPILER V7.08   DS1307_1                                                              06/14/2019 17:59:22 PAGE 1   
+
+
+C51 COMPILER V7.08, COMPILATION OF MODULE DS1307_1
+OBJECT MODULE PLACED IN C:\!!!!!!\ds1307_1.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE ds1307_1.c BROWSE DEBUG OBJECTEXTEND OBJECT(C:\!!!!!!\ds1307_1.obj)
+
+line level    source
+
+   1          #include"types.h"
+   2          #include"i2c.h"
+   3          #include<string.h>
+   4          code u8 daymap[7][4]={"SUN","MON","TUE","WED","THU","FRI","SAT"};
+   5          void settime(s8 *time)
+   6          {
+   7   1      u8 hrs,min,sec;
+   8   1      hrs=((time[0]&0x0f)<<4)|(time[1]&0x0f);
+   9   1      min=((time[3]&0x0f)<<4)|(time[4]&0x0f);
+  10   1      sec=((time[6]&0x0f)<<4)|(time[7]&0x0f);
+  11   1      I2C_Dev_Write(0xd0,0x02,hrs);
+  12   1      I2C_Dev_Write(0xd0,0x01,min);
+  13   1      I2C_Dev_Write(0xd0,0x00,sec);
+  14   1      }
+  15          
+  16          s8*gettime(void)
+  17          {
+  18   1      static s8 time[9]="00:00:00";
+  19   1      u8 hrs,sec,min;
+  20   1      hrs=I2C_Dev_Read(0xd0,0x02);
+  21   1      min=I2C_Dev_Read(0xd0,0x01);
+  22   1      sec=I2C_Dev_Read(0xd0,0x00);
+  23   1      time[0]=(hrs>>4)+48;
+  24   1      time[1]=(hrs&0x0f)+48;
+  25   1      time[3]=(min>>4)+48;
+  26   1      time[4]=(min&0x0f)+48;
+  27   1      time[6]=(sec>>4)+48;
+  28   1      time[7]=(sec&0x0f)+48;
+  29   1      return time;
+  30   1      }
+  31          void setdate(s8 *cal)
+  32          {
+  33   1      u8 day,date,month,year,i;
+  34   1      s8 temp[4]=" ";
+  35   1      strncpy(temp,cal,3);
+  36   1      for(i=0;i<8;i++)
+  37   1      {
+  38   2      if(strstr(daymap[i],temp))
+  39   2      break;
+  40   2      }
+  41   1      day=++i;
+  42   1      date=((cal[4]&0x0f)<<4)|(cal[5]&0x0f);
+  43   1      month=((cal[7]&0x0f)<<4)|(cal[8]&0x0f);
+  44   1      year=((cal[12]&0x0f)<<4)|(cal[13]&0x0f);
+  45   1      I2C_Dev_Write(0xd0,0x03,day);
+  46   1      I2C_Dev_Write(0xd0,0x04,date);
+  47   1      I2C_Dev_Write(0xd0,0x05,month);
+  48   1      I2C_Dev_Write(0xd0,0x06,year);
+  49   1      }
+  50          
+  51          s8 *getdate(void)
+  52          {
+  53   1      static s8 calender[15]="DAY/00/00/2000";
+  54   1      u8 day,date,month,year;
+  55   1      day=I2C_Dev_Read(0xd0,0x03);
+C51 COMPILER V7.08   DS1307_1                                                              06/14/2019 17:59:22 PAGE 2   
+
+  56   1      date=I2C_Dev_Read(0xd0,0x04);
+  57   1      month=I2C_Dev_Read(0xd0,0x05);
+  58   1      year=I2C_Dev_Read(0xd0,0x06);
+  59   1      
+  60   1      calender[0]=daymap[day-1][0];
+  61   1      calender[1]=daymap[day-1][1];
+  62   1      calender[2]=daymap[day-1][2];
+  63   1      
+  64   1      calender[4]=(date>>4)+48;
+  65   1      calender[5]=(date&0x0f)+48;
+  66   1      calender[7]=(month>>4)+48;
+  67   1      calender[8]=(month&0x0f)+48;
+  68   1      calender[12]=(year>>4)+48;
+  69   1      calender[13]=(year&0x0f)+48;
+  70   1      
+  71   1      return calender;
+  72   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    530    ----
+   CONSTANT SIZE    =     32    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     24      18
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

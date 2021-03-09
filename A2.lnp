@@ -1,0 +1,10 @@
+"i2c.obj",
+"lcd1.obj",
+"mcp3204.obj",
+"spi.obj",
+"ds1307_1.obj",
+"trans_string.obj",
+"delay.obj",
+"projectmain.obj" 
+TO "A2" 
+RAMSIZE(256) 

@@ -1,0 +1,42 @@
+C51 COMPILER V7.08   SPI                                                                   06/14/2019 17:59:21 PAGE 1   
+
+
+C51 COMPILER V7.08, COMPILATION OF MODULE SPI
+OBJECT MODULE PLACED IN C:\!!!!!!\spi.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE spi.c BROWSE DEBUG OBJECTEXTEND OBJECT(C:\!!!!!!\spi.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          #include"types.h"
+   3          #include"mcp3204_defines.h"
+   4          
+   5          //bitbanging/sw spi
+   6          /*
+   7          u8 spi(u8 dat)
+   8          {
+   9          u8 i,val=0;
+  10          for(i=0;i<8;i++)
+  11          {
+  12          clk=0;
+  13          din=(dat&(0x80>>i))?1:0;
+  14          clk=1;
+  15          if(dout)
+  16          val=val|(0x80>>i);
+  17          }
+  18          return val;
+  19          }*/
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

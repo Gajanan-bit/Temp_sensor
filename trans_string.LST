@@ -1,0 +1,77 @@
+C51 COMPILER V7.08   TRANS_STRING                                                          06/14/2019 17:59:22 PAGE 1   
+
+
+C51 COMPILER V7.08, COMPILATION OF MODULE TRANS_STRING
+OBJECT MODULE PLACED IN C:\!!!!!!\trans_string.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE trans_string.c BROWSE DEBUG OBJECTEXTEND OBJECT(C:\!!!!!!\trans_string.obj)
+
+line level    source
+
+   1          #include<reg51.h> 
+   2          #include<string.h>
+   3          //#include"lcd.h"
+   4          //#include"lcd1.c"
+   5          void uart_init()
+   6          {
+   7   1      SCON=0x50;
+   8   1      TMOD=0x20;
+   9   1      TH1=253;
+  10   1      TR1=1;
+  11   1      }
+  12          void tx_char(char c)
+  13          {
+  14   1      SBUF=c;
+  15   1      while(TI==0);
+  16   1      TI=0;
+  17   1      }                                                                                                         
+             -                                  
+  18          char rx_char(void)
+  19          {
+  20   1      while(RI==0);
+  21   1      RI=0;
+  22   1      return(SBUF);
+  23   1      }
+  24          void string(char *str)
+  25          {
+  26   1      int i;
+  27   1      for(i=0;str[i];i++)
+  28   1      {
+  29   2      tx_char(str[i]);
+  30   2      }
+  31   1      }
+  32          
+  33          void uart_int(int i)
+  34          {
+  35   1              char s[10];
+  36   1              int j;
+  37   1              if(i<10)
+  38   1              {
+  39   2                      tx_char('-');
+  40   2                      i*=-1;
+  41   2              }
+  42   1              for(j=0;i;i/=10,j++)
+  43   1                      s[j]=(i%10)+48;
+  44   1              s[j]=0;
+  45   1              for(j=strlen(s)-1;j>=0;j--)
+  46   1              {       
+  47   2                      tx_char(s[j]);
+  48   2              }
+  49   1      }
+  50          
+  51          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+C51 COMPILER V7.08   TRANS_STRING                                                          06/14/2019 17:59:22 PAGE 2   
+
+   CODE SIZE        =    200    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      15
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

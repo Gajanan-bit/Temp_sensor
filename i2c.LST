@@ -1,0 +1,193 @@
+C51 COMPILER V7.08   I2C                                                                   06/14/2019 17:59:20 PAGE 1   
+
+
+C51 COMPILER V7.08, COMPILATION OF MODULE I2C
+OBJECT MODULE PLACED IN C:\!!!!!!\i2c.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE i2c.c BROWSE DEBUG OBJECTEXTEND OBJECT(C:\!!!!!!\i2c.obj)
+
+line level    source
+
+   1          #include"types.h"
+   2          #include"i2c.h"
+   3          #include"i2c_defines.h"
+   4          #include"delay.h"
+   5          
+   6          void I2Cstart(void)
+   7          {
+   8   1      
+   9   1      sdapin=1;
+  10   1      sclpin=1;
+  11   1      
+  12   1      sdapin=0;
+  13   1      }
+  14          void I2Cstop(void)
+  15          {
+  16   1      sclpin=0;
+  17   1      sdapin=0;
+  18   1      sclpin=1;
+  19   1      sdapin=1;
+  20   1      }
+  21          void I2Cwrite(u8 dat)
+  22          {
+  23   1      u8 i;
+  24   1      for(i=0;i<8;i++)
+  25   1      {
+  26   2      sclpin=0;
+  27   2      sdapin=((dat>>(7-i))&1);
+  28   2      sclpin=1;
+  29   2      }
+  30   1      }
+  31          u8 I2Cread(void)
+  32          {
+  33   1      u8 i,buf=0;
+  34   1      for(i=0;i<8;i++)
+  35   1      {
+  36   2      sclpin=0;
+  37   2      sclpin=1;
+  38   2      if(sdapin)
+  39   2      buf=buf|0x80>>i;
+  40   2      }
+  41   1      return buf;
+  42   1      }
+  43          void I2Cack(void)
+  44          {
+  45   1      sclpin=0;
+  46   1      sdapin=1;
+  47   1      sclpin=1;
+  48   1      while(sdapin);
+  49   1      }
+  50          void I2Cnoack(void)
+  51          {
+  52   1      sclpin=0;
+  53   1      sdapin=1;
+  54   1      sclpin=1;
+  55   1      }
+C51 COMPILER V7.08   I2C                                                                   06/14/2019 17:59:20 PAGE 2   
+
+  56          /*void I2Cmasterack(void)
+  57          {
+  58          sclpin=0;
+  59          sdapin=0;
+  60          sclpin=1;
+  61          sclpin=0;
+  62          sdapin=1;
+  63          }*/
+  64          void I2Crestart(void)
+  65          {
+  66   1      sclpin=0;
+  67   1      sdapin=1;
+  68   1      sclpin=1;
+  69   1      sdapin=0;
+  70   1      }
+  71          void I2C_Dev_Write(u8 slave_addr,u8 buffer_addr,u8 dat)
+  72          {
+  73   1      I2Cstart();
+  74   1      I2Cwrite(slave_addr);
+  75   1      I2Cack();
+  76   1      I2Cwrite(buffer_addr);
+  77   1      I2Cack();
+  78   1      I2Cwrite(dat);
+  79   1      I2Cack();
+  80   1      I2Cstop();
+  81   1      delay_ms(10);
+  82   1      }
+  83          
+  84          u8 I2C_Dev_Read(u8 slave_addr,u8 buffer_addr)
+  85          {
+  86   1      u8 buf=0;
+  87   1      I2Cstart();
+  88   1      I2Cwrite(slave_addr);
+  89   1      I2Cack();
+  90   1      I2Cwrite(buffer_addr);
+  91   1      I2Cack();
+  92   1      I2Crestart();
+  93   1      I2Cwrite(slave_addr|1);
+  94   1      I2Cack();
+  95   1      buf=I2Cread();
+  96   1      I2Cnoack();
+  97   1      I2Cstop();
+  98   1      return buf;
+  99   1      }
+ 100          
+ 101          //pagewrite//
+ 102          /*void I2C_Dev_Pagewrite(u8 slave_addr,u8 buf_start_addr,u8 *arr,u8 size)
+ 103          {
+ 104          u8 i;
+ 105          I2Cstart();
+ 106          I2Cwrite(slave_addr);
+ 107          I2Cack();
+ 108          I2Cwrite(buf_start_addr);
+ 109          I2Cack();
+ 110          for(i=0;i<size;i++)
+ 111          {
+ 112          I2Cwrite(arr[i]);
+ 113          I2Cack();
+ 114          }
+ 115          I2Cstop();
+ 116          }
+ 117          
+C51 COMPILER V7.08   I2C                                                                   06/14/2019 17:59:20 PAGE 3   
+
+ 118          //sequential raed
+ 119          void I2C_Dev_Seq_Read(u8 slave_addr,u8 buf_addr,u8 *arr,u8 size)
+ 120          {
+ 121          u8 i;
+ 122          I2Cstart();
+ 123          I2Cwrite(slave_addr);
+ 124          I2Cack();
+ 125          I2Cwrite(buf_addr);
+ 126          I2Cack();
+ 127          I2Crestart();
+ 128          I2Cwrite(slave_addr);
+ 129          I2Cack();
+ 130          for(i=0;i<size-1;i++)
+ 131          {
+ 132          arr[i]=I2Cread();
+ 133          I2Cmasterack();
+ 134          }
+ 135          arr[i++]='\0';
+ 136          I2Cnoack();
+ 137          I2Cstop();
+ 138          }*/
+ 139          
+ 140          
+ 141          
+ 142          
+ 143          
+ 144          
+ 145          
+ 146          
+ 147          
+ 148          
+ 149          
+ 150          
+ 151          
+ 152          
+ 153          
+ 154          
+ 155          
+ 156          
+ 157          
+ 158          
+ 159          
+ 160          
+ 161          
+ 162          
+ 163          
+ 164          
+ 165          
+ 166          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    177    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

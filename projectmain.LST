@@ -1,0 +1,94 @@
+C51 COMPILER V7.08   PROJECTMAIN                                                           06/14/2019 17:59:23 PAGE 1   
+
+
+C51 COMPILER V7.08, COMPILATION OF MODULE PROJECTMAIN
+OBJECT MODULE PLACED IN C:\!!!!!!\projectmain.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE projectmain.c BROWSE DEBUG OBJECTEXTEND OBJECT(C:\!!!!!!\projectmain.obj)
+
+line level    source
+
+   1          #include<reg51.h>
+   2          #include<string.h>
+   3          #include"types.h"
+   4          #include"i2c.h"
+   5          #include"lcd.h"
+   6          #include"delay.h"
+   7          #include"i2c_defines.h"
+   8          #include"uart.h"
+   9          #include"ds1307_1.h"
+  10          #include"mcp3204.h"
+  11          #include"mcp3204_defines.h"
+  12          void RTC_init(void);
+  13          main()
+  14          {
+  15   1      u8 i=0;
+  16   1      LCD_init();
+  17   1      uart_init();
+  18   1      RTC_init();
+  19   1      delay_ms(500);
+  20   1      while(1)
+  21   1      {
+  22   2      LCD_cmd(0x80);
+  23   2      LCD_str(gettime());
+  24   2      string(gettime());
+  25   2      
+  26   2      LCD_cmd(0x89);
+  27   2      LCD_int(read1_adc_mcp3204(i)*100);
+  28   2      LCD_str("deg");
+  29   2      //LCD_cmd(0x06);
+  30   2      uart_int(read1_adc_mcp3204(i)*100);
+  31   2      string("deg");
+  32   2      
+  33   2      LCD_cmd(0xc0);
+  34   2      LCD_str(getdate());
+  35   2      string(getdate());
+  36   2      delay_ms(500);
+  37   2      //while(1);
+  38   2      }
+  39   1      }
+  40          void RTC_init(void)
+  41          {
+  42   1      
+  43   1      s8 time[9]="12:12:30",cal[15]="THU/13/06/2019";
+  44   1      
+  45   1              LCD_str("setting RTC time :");
+  46   1              string("setting RTC time  ");
+  47   1              
+  48   1              LCD_cmd(0xc0);
+  49   1              delay_ms(2000);
+  50   1              LCD_str(time);
+  51   1              settime(time);
+  52   1              delay_ms(2000);
+  53   1      
+  54   1              LCD_cmd(0x01);
+  55   1              LCD_str("setting RTC cal :");
+C51 COMPILER V7.08   PROJECTMAIN                                                           06/14/2019 17:59:23 PAGE 2   
+
+  56   1              string("setting RTC cal  ");
+  57   1              LCD_cmd(0xc0);
+  58   1              delay_ms(1000);
+  59   1              LCD_str(cal);
+  60   1              setdate(cal);
+  61   1              delay_ms(1000);
+  62   1      
+  63   1              LCD_cmd(0x01);
+  64   1              LCD_str("reading RTC ");
+  65   1              string("readingRTC ");
+  66   1              delay_ms(500);
+  67   1              LCD_cmd(0x01);
+  68   1      }
+  69          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    315    ----
+   CONSTANT SIZE    =    127    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----      25
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
